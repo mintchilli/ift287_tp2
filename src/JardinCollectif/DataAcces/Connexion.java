@@ -1,6 +1,8 @@
-package JardinCollectif;
+package JardinCollectif.DataAcces;
 
 import java.sql.*;
+
+import JardinCollectif.IFT287Exception;
 
 /**
  * Gestionnaire d'une connexion avec une BD relationnelle via JDBC.<br><br>
