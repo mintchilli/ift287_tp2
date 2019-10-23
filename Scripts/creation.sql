@@ -10,7 +10,7 @@ CREATE TABLE Membre(
   CREATE TABLE Lot(
   idLot SERIAL PRIMARY KEY,
   nomLot varchar,
-  noMaxMembre varchar,
+  noMaxMembre integer
   );
   
   CREATE TABLE Plante(
@@ -23,7 +23,15 @@ CREATE TABLE Membre(
   );
   
   CREATE TABLE MembreLot(
-  idLot integer REFERENCES Lot(idLot),
-  idMembre integer REFERENCES Membre(noMembre),
+  idLot integer REFERENCES Lot(idLot) ON DELETE CASCADE,
+  noMembre integer REFERENCES Membre(noMembre) ON DELETE CASCADE,
   validationAdmin boolean DEFAULT false
+  );
+
+  CREATE TABLE PlanteLot(
+  idLot integer REFERENCES Lot(idLot) ON DELETE CASCADE,
+  idPlante integer REFERENCES Plante(idPlante) ON DELETE CASCADE,
+  datePlantation date,
+  noExemplaire integer,
+  dateRecolte date
   );
