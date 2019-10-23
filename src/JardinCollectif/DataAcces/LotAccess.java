@@ -52,15 +52,17 @@ public class LotAccess {
 
 	public int getLotid(String nomLot) {
 		try {
-			PreparedStatement s = conn.getConnection().prepareStatement("select idlot from lot where nomlot = ?");
+			PreparedStatement s = conn.getConnection().prepareStatement("SELECT idlot FROM lot WHERE nomlot = ?");
 
 			s.setString(1, nomLot);
 
 			s.execute();
 			ResultSet rs = s.getResultSet();
-			rs.next();
+			if(rs.next()) {
+				return rs.getInt("idlot");
+			}
 
-			return rs.getInt("idlot");
+			return -1;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -105,6 +107,63 @@ public class LotAccess {
 			return false;
 		}
 
+	}
+
+	public int getMembreMax(String nomLot) {
+		try {
+			PreparedStatement s = conn.getConnection().prepareStatement("SELECT nomaxmembre FROM lot WHERE nomlot = ?");
+
+			s.setString(1, nomLot);
+
+			s.execute();
+			ResultSet rs = s.getResultSet();
+			if (rs.next()) {
+				return rs.getInt("nomaxmembre");
+			}
+			return -1;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
+
+	public boolean supprimerLot(String nomLot) {
+		try {
+
+			PreparedStatement s = conn.getConnection().prepareStatement("DELETE FROM membrelot WHERE idlot = ?");
+			s.setInt(1, getLotid(nomLot));
+			s.execute();
+			
+			s = conn.getConnection().prepareStatement("DELETE FROM lot WHERE nomlot = ?");
+			s.setString(1, nomLot);
+			s.execute();
+			return true;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+
+	public int getPlantsForLot(String nomLot) {
+		try {
+
+			PreparedStatement s = conn.getConnection().prepareStatement("SELECT COUNT(*) FROM plantelot WHERE idlot = ?");
+			s.setInt(1, getLotid(nomLot));
+			s.execute();
+			
+			ResultSet rs = s.getResultSet();
+			if (rs.next()) {
+				return rs.getInt("count");
+			}
+			return -1;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
+		}
 	}
 
 }

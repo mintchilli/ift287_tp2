@@ -2,13 +2,12 @@
 //   NomEquipier1 - Matricule
 //   NomEquipier2 - Matricule
 
-package JardinCollectif.Presentation;
+package JardinCollectif;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import JardinCollectif.IFT287Exception;
 import JardinCollectif.Business.ConnectionManager;
 import JardinCollectif.DataAcces.Connexion;
 

@@ -5,11 +5,11 @@ import java.sql.SQLException;
 import java.util.StringTokenizer;
 
 import JardinCollectif.IFT287Exception;
+import JardinCollectif.JardinCollectif;
 import JardinCollectif.DataAcces.Connexion;
 import JardinCollectif.DataAcces.LotAccess;
 import JardinCollectif.DataAcces.MembreAccess;
 import JardinCollectif.DataAcces.PlanteAccess;
-import JardinCollectif.Presentation.JardinCollectif;
 
 public class ConnectionManager {
 	private static Connexion cx;
@@ -37,10 +37,7 @@ public class ConnectionManager {
             if (tokenizer.hasMoreTokens())
             {
                 String command = tokenizer.nextToken();
-                // Vous devez remplacer la chaine "commande1" et "commande2" par
-                // les commandes de votre programme. Vous pouvez ajouter autant
-                // de else if que necessaire. Vous n'avez pas a traiter la
-                // commande "quitter".
+                
                 if (command.equals("inscrireMembre"))
                 {
                     // Lecture des parametres
@@ -59,10 +56,18 @@ public class ConnectionManager {
                 {
                 	int noMembre = readInt(tokenizer);
                 	
+                	MembreManager mm = new MembreManager(cx);
+                	
                 	if(ma == null)
                     	ma = new MembreAccess(cx);
                     
-                    ma.supprimerMembre(noMembre);
+                	if(!mm.isOnlyLotMember(noMembre)) {
+                		ma.supprimerMembre(noMembre);
+                	}
+                	else {
+                		jc.afficher("erreur, le membre est seul sur un lot");
+                	}
+                    
                 }
                 else if (command.equals("promouvoirAdministrateur"))
                 {
@@ -85,8 +90,15 @@ public class ConnectionManager {
                 }
                 else if (command.equals("supprimerLot"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                	String nomLot = readString(tokenizer);
+                	
+                	if(la == null)
+                    	la = new LotAccess(cx);
+                	LotManager lm = new LotManager(cx);
+                	if(lm.hasPlants(nomLot))
+                		jc.afficher("erreur, il y a encore desd plantes non r�colt� dans ce lot");
+                	else
+                		la.supprimerLot(nomLot);
                 }
                 else if (command.equals("rejoindreLot"))
                 {
@@ -103,10 +115,19 @@ public class ConnectionManager {
                 	String nomLot = readString(tokenizer);
                 	int noMembre = readInt(tokenizer);
                 	
+                	LotManager lm = new LotManager(cx);
+                	
                 	if(la == null)
                     	la = new LotAccess(cx);
                     
-                    la.accepterDemande(la.getLotid(nomLot), noMembre);
+                	if(lm.hasSpace(nomLot)) {
+                		la.accepterDemande(la.getLotid(nomLot), noMembre);
+                	}
+                	else {
+                		jc.afficher("erreur, plus d'espace dans le lot");
+                	}
+                	
+                    
                 }
                 else if (command.equals("refuserDemande"))
                 {
@@ -160,7 +181,7 @@ public class ConnectionManager {
                 }
                 else
                 {
-                    System.out.println(" : Transaction non reconnue");
+                    jc.afficher(" : Transaction non reconnue");
                 }
             }
             
@@ -168,7 +189,7 @@ public class ConnectionManager {
         }
         catch (Exception e)
         {
-        	jc.AfficherErreur(e.toString());
+        	jc.afficher(e.toString());
             // Ce rollback est ici seulement pour vous aider et éviter des problèmes lors de la correction
             // automatique. En théorie, il ne sert à rien et ne devrait pas apparaître ici dans un programme
             // fini et fonctionnel sans bogues.
