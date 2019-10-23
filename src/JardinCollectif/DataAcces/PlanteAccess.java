@@ -1,5 +1,5 @@
 package JardinCollectif.DataAcces;
 
-public class LotManager {
+public class PlanteAccess {
 
 }

@@ -6,17 +6,17 @@ import java.util.StringTokenizer;
 
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.DataAcces.Connexion;
-import JardinCollectif.DataAcces.LotManager;
-import JardinCollectif.DataAcces.MembreManager;
-import JardinCollectif.DataAcces.PlanteManager;
+import JardinCollectif.DataAcces.LotAccess;
+import JardinCollectif.DataAcces.MembreAccess;
+import JardinCollectif.DataAcces.PlanteAccess;
 import JardinCollectif.Presentation.JardinCollectif;
 
 public class ConnectionManager {
 	private static Connexion cx;
 	private JardinCollectif jc = new JardinCollectif();
-	private MembreManager mm;
-	private LotManager lm;
-	private PlanteManager pm;
+	private MembreAccess ma;
+	private LotAccess la;
+	private PlanteAccess pa;
 
 	public void getParams(String serveur, String bd, String user, String pass) throws IFT287Exception, SQLException {
 		cx = new Connexion(serveur, bd, user, pass);
@@ -49,26 +49,39 @@ public class ConnectionManager {
                     String motDePasse = readString(tokenizer);
                     int noMembre = readInt(tokenizer);
                     
-                    if(mm == null)
-                    	mm = new MembreManager(cx);
+                    if(ma == null)
+                    	ma = new MembreAccess(cx);
                     
-                    mm.inscrireMembre(prenom, nom, motDePasse, noMembre);
+                    ma.inscrireMembre(prenom, nom, motDePasse, noMembre);
 
                 }
                 else if (command.equals("supprimerMembre"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                	int noMembre = readInt(tokenizer);
+                	
+                	if(ma == null)
+                    	ma = new MembreAccess(cx);
+                    
+                    ma.supprimerMembre(noMembre);
                 }
                 else if (command.equals("promouvoirAdministrateur"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                	int noMembre = readInt(tokenizer);
+                	
+                	if(ma == null)
+                    	ma = new MembreAccess(cx);
+                    
+                    ma.makeAdmin(noMembre);
                 }
                 else if (command.equals("ajouterLot"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                	String nomLot = readString(tokenizer);
+                	int noMaxMembre = readInt(tokenizer);
+                	
+                	if(la == null)
+                    	la = new LotAccess(cx);
+                    
+                    la.ajouterLot(nomLot, noMaxMembre);
                 }
                 else if (command.equals("supprimerLot"))
                 {
@@ -77,18 +90,33 @@ public class ConnectionManager {
                 }
                 else if (command.equals("rejoindreLot"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                	String nomLot = readString(tokenizer);
+                	int noMembre = readInt(tokenizer);
+                	
+                	if(la == null)
+                    	la = new LotAccess(cx);
+                    
+                    la.rejoindreLot(la.getLotid(nomLot), noMembre);
                 }
                 else if (command.equals("accepterDemande"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                	String nomLot = readString(tokenizer);
+                	int noMembre = readInt(tokenizer);
+                	
+                	if(la == null)
+                    	la = new LotAccess(cx);
+                    
+                    la.accepterDemande(la.getLotid(nomLot), noMembre);
                 }
                 else if (command.equals("refuserDemande"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                	String nomLot = readString(tokenizer);
+                	int noMembre = readInt(tokenizer);
+                	
+                	if(la == null)
+                    	la = new LotAccess(cx);
+                    
+                    la.refuserDemande(la.getLotid(nomLot), noMembre);
                 }
                 else if (command.equals("ajouterPlante"))
                 {
