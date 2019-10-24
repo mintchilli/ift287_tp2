@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MembreAccess {
 
@@ -103,6 +104,67 @@ public class MembreAccess {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return -1;
+		}
+	}
+
+	public ArrayList<String> getMembreList() {
+		try {
+			PreparedStatement s = conn.getConnection().prepareStatement("SELECT nom, prenom, isadmin FROM membre;");
+
+			s.execute();
+			ResultSet rs = s.getResultSet();
+
+			ArrayList<String> ret = new ArrayList<String>();
+
+			while (rs.next()) {
+				String data = "Prénom : ";
+				data += rs.getString("prenom");
+				data += ", Nom : ";
+				data += rs.getString("nom");
+				data += ", Est un administrateur: ";
+				if (rs.getBoolean("isadmin"))
+					data += "oui";
+				else
+					data += "non";
+				ret.add(data);
+			}
+
+			return ret;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public String getMembre(Integer noMembre) {
+		try {
+			PreparedStatement s = conn.getConnection().prepareStatement("SELECT nom, prenom, isadmin FROM membre WHERE nomembre = ?");
+
+			s.setInt(1, noMembre);
+			s.execute();
+			
+			ResultSet rs = s.getResultSet();
+
+			String data = "";
+
+			while (rs.next()) {
+				data = "Prénom : ";
+				data += rs.getString("prenom");
+				data += ", Nom : ";
+				data += rs.getString("nom");
+				data += ", Est un administrateur: ";
+				if (rs.getBoolean("isadmin"))
+					data += "oui";
+				else
+					data += "non";
+			}
+
+			return data;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 

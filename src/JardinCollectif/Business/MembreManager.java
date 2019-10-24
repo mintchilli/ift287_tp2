@@ -1,8 +1,6 @@
 package JardinCollectif.Business;
 
 import java.util.ArrayList;
-import java.util.Map;
-
 import JardinCollectif.DataAcces.Connexion;
 import JardinCollectif.DataAcces.MembreAccess;
 
@@ -30,9 +28,10 @@ public class MembreManager {
 		return false;
 	}
 
-	public ArrayList<Map<String,Boolean>> getMembre() {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<String> getMembre() {
+		MembreAccess ma = new MembreAccess(conn);
+		
+		return ma.getMembreList();
 	}
 
 }

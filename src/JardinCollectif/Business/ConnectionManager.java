@@ -65,7 +65,7 @@ public class ConnectionManager {
                 		ma.supprimerMembre(noMembre);
                 	}
                 	else {
-                		jc.afficher("erreur, le membre est seul sur un lot");
+                		jc.AfficherErreur("erreur, le membre est seul sur un lot");
                 	}
                     
                 }
@@ -96,7 +96,7 @@ public class ConnectionManager {
                     	la = new LotAccess(cx);
                 	LotManager lm = new LotManager(cx);
                 	if(lm.hasPlants(nomLot))
-                		jc.afficher("erreur, il y a encore desd plantes non récolté dans ce lot");
+                		jc.AfficherErreur("erreur, il y a encore desd plantes non récolté dans ce lot");
                 	else
                 		la.supprimerLot(nomLot);
                 }
@@ -124,7 +124,7 @@ public class ConnectionManager {
                 		la.accepterDemande(la.getLotid(nomLot), noMembre);
                 	}
                 	else {
-                		jc.afficher("erreur, plus d'espace dans le lot");
+                		jc.AfficherErreur("erreur, plus d'espace dans le lot");
                 	}
                 	
                     
@@ -161,8 +161,8 @@ public class ConnectionManager {
                 }
                 else if (command.equals("afficherMembres"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                	MembreManager mm = new MembreManager(cx);
+                	jc.afficherListeMembre(mm.getMembre());
                 }
                 else if (command.equals("afficherPlantes"))
                 {
@@ -171,8 +171,8 @@ public class ConnectionManager {
                 }
                 else if (command.equals("afficherLots"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                    LotManager lm = new LotManager(cx);
+                    jc.afficherLots(lm.getLotsAvecMembre());
                 }
                 else if (command.equals("afficherPlantesLot"))
                 {
@@ -181,7 +181,7 @@ public class ConnectionManager {
                 }
                 else
                 {
-                    jc.afficher(" : Transaction non reconnue");
+                    jc.AfficherErreur(" : Transaction non reconnue");
                 }
             }
             
@@ -189,7 +189,7 @@ public class ConnectionManager {
         }
         catch (Exception e)
         {
-        	jc.afficher(e.toString());
+        	jc.AfficherErreur(e.toString());
             // Ce rollback est ici seulement pour vous aider et Ã©viter des problÃ¨mes lors de la correction
             // automatique. En thÃ©orie, il ne sert Ã  rien et ne devrait pas apparaÃ®tre ici dans un programme
             // fini et fonctionnel sans bogues.

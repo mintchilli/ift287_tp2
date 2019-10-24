@@ -3,6 +3,7 @@ package JardinCollectif.DataAcces;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class LotAccess {
 
@@ -58,7 +59,7 @@ public class LotAccess {
 
 			s.execute();
 			ResultSet rs = s.getResultSet();
-			if(rs.next()) {
+			if (rs.next()) {
 				return rs.getInt("idlot");
 			}
 
@@ -134,7 +135,7 @@ public class LotAccess {
 			PreparedStatement s = conn.getConnection().prepareStatement("DELETE FROM membrelot WHERE idlot = ?");
 			s.setInt(1, getLotid(nomLot));
 			s.execute();
-			
+
 			s = conn.getConnection().prepareStatement("DELETE FROM lot WHERE nomlot = ?");
 			s.setString(1, nomLot);
 			s.execute();
@@ -150,10 +151,11 @@ public class LotAccess {
 	public int getPlantsForLot(String nomLot) {
 		try {
 
-			PreparedStatement s = conn.getConnection().prepareStatement("SELECT COUNT(*) FROM plantelot WHERE idlot = ?");
+			PreparedStatement s = conn.getConnection()
+					.prepareStatement("SELECT COUNT(*) FROM plantelot WHERE idlot = ?");
 			s.setInt(1, getLotid(nomLot));
 			s.execute();
-			
+
 			ResultSet rs = s.getResultSet();
 			if (rs.next()) {
 				return rs.getInt("count");
@@ -163,6 +165,54 @@ public class LotAccess {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return -1;
+		}
+	}
+
+	public ArrayList<String> getLots() {
+		try {
+			PreparedStatement s = conn.getConnection().prepareStatement("SELECT nomlot, nomaxmembre FROM lot");
+
+			s.execute();
+			ResultSet rs = s.getResultSet();
+
+			ArrayList<String> ret = new ArrayList<String>();
+
+			while (rs.next()) {
+				String data = "";
+				data += rs.getString("nomlot");
+				data += ",";
+				data += rs.getString("nomaxmembre");
+				ret.add(data);
+			}
+
+			return ret;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public ArrayList<Integer> getMembrePourLot(int lotId) {
+		try {
+			PreparedStatement s = conn.getConnection()
+					.prepareStatement("SELECT nomembre FROM membrelot WHERE idlot = ? and validationadmin = true");
+
+			s.setInt(1, lotId);
+			s.execute();
+			ResultSet rs = s.getResultSet();
+
+			ArrayList<Integer> ret = new ArrayList<Integer>();
+
+			while (rs.next()) {
+				ret.add(rs.getInt("nomembre"));
+			}
+
+			return ret;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 

@@ -6,6 +6,7 @@ package JardinCollectif;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import JardinCollectif.Business.ConnectionManager;
@@ -120,6 +121,29 @@ public class JardinCollectif
     public void AfficherErreur(String er) {
     	System.out.println(" " + er);
     }
+
+	public void afficherListeMembre(ArrayList<String> listeMembre) {
+		System.out.println();
+		for (String str : listeMembre) {
+			System.out.println(str);
+		}
+		
+	}
+
+
+	public void afficherLots(Map<String, ArrayList<String>> lotsAvecMembre) {
+
+		for (String lots : lotsAvecMembre.keySet()) {
+			System.out.println();
+			System.out.println("Nom du lot: " + lots.split(",")[0] + " , Membres maximum possible: " + lots.split(",")[1]);
+			System.out.println("----------Liste des membre pour le lot----------");
+			ArrayList<String> membres = lotsAvecMembre.get(lots);
+			for (String membre : membres) {
+				System.out.println("\t" + membre);
+			}
+		}
+		
+	}
 
 
 
