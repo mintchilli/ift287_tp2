@@ -1,1 +1,1 @@
-DROP TABLE Membre, Lot, MembreLot, Plante CASCADE;
+DROP TABLE Membre, Lot, MembreLot, Plante, PlanteLot CASCADE;

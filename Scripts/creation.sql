@@ -16,10 +16,7 @@ CREATE TABLE Membre(
   CREATE TABLE Plante(
   idPlante SERIAL PRIMARY KEY,
   nomPlante varchar,
-  dateRecolte date,
-  datePlantation date,
-  tempsCulture integer,
-  idLot integer REFERENCES Lot(idLot)
+  tempsCulture integer
   );
   
   CREATE TABLE MembreLot(
@@ -32,6 +29,6 @@ CREATE TABLE Membre(
   idLot integer REFERENCES Lot(idLot) ON DELETE CASCADE,
   idPlante integer REFERENCES Plante(idPlante) ON DELETE CASCADE,
   datePlantation date,
-  noExemplaire integer,
-  dateRecolte date
+  nbExemplaires integer,
+  dateDeRecoltePrevu date
   );

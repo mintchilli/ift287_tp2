@@ -109,7 +109,7 @@ public class MembreAccess {
 
 	public ArrayList<String> getMembreList() {
 		try {
-			PreparedStatement s = conn.getConnection().prepareStatement("SELECT nom, prenom, isadmin FROM membre;");
+			PreparedStatement s = conn.getConnection().prepareStatement("SELECT nom, prenom, estadmin FROM membre;");
 
 			s.execute();
 			ResultSet rs = s.getResultSet();
@@ -122,7 +122,7 @@ public class MembreAccess {
 				data += ", Nom : ";
 				data += rs.getString("nom");
 				data += ", Est un administrateur: ";
-				if (rs.getBoolean("isadmin"))
+				if (rs.getBoolean("estadmin"))
 					data += "oui";
 				else
 					data += "non";
@@ -139,7 +139,7 @@ public class MembreAccess {
 
 	public String getMembre(Integer noMembre) {
 		try {
-			PreparedStatement s = conn.getConnection().prepareStatement("SELECT nom, prenom, isadmin FROM membre WHERE nomembre = ?");
+			PreparedStatement s = conn.getConnection().prepareStatement("SELECT nom, prenom, estadmin FROM membre WHERE nomembre = ?");
 
 			s.setInt(1, noMembre);
 			s.execute();
@@ -154,7 +154,7 @@ public class MembreAccess {
 				data += ", Nom : ";
 				data += rs.getString("nom");
 				data += ", Est un administrateur: ";
-				if (rs.getBoolean("isadmin"))
+				if (rs.getBoolean("estadmin"))
 					data += "oui";
 				else
 					data += "non";

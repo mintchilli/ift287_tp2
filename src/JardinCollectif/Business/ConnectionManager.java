@@ -2,6 +2,11 @@ package JardinCollectif.Business;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.StringTokenizer;
 
 import JardinCollectif.IFT287Exception;
@@ -141,23 +146,74 @@ public class ConnectionManager {
                 }
                 else if (command.equals("ajouterPlante"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                	String nomPlante = readString(tokenizer);
+                	int tempsDeCulture = readInt(tokenizer);
+                	
+                	if (pa == null)
+                		pa = new PlanteAccess(cx);
+                	
+                    pa.ajouterPlante(nomPlante, tempsDeCulture);
                 }
                 else if (command.equals("retirerPlante"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                	String nomPlante = readString(tokenizer);
+                	
+                	if (pa == null)
+                		pa = new PlanteAccess(cx);
+                	
+                    pa.retirerPlante(nomPlante);
                 }
                 else if (command.equals("planterPlante"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                	String nomPlante = readString(tokenizer);
+                	String nomLot = readString(tokenizer);
+                	int noMembre = readInt(tokenizer);
+                	int nbExemplaires = readInt(tokenizer);
+                	Date datePlantation = readDate(tokenizer);
+                    
+                	if (pa == null)
+                		pa = new PlanteAccess(cx);
+                	
+                	if (ma == null)
+                		ma = new MembreAccess(cx);
+                	
+                	if (la == null)
+                		la = new LotAccess(cx);
+                	
+                	int idLot = la.getLotid(nomLot);
+                	int idPlante = pa.getPlanteId(nomPlante);
+                	int tempsCulture = pa.getTempsCulture(nomPlante);
+                	
+                	Calendar calendar = Calendar.getInstance();
+                	calendar.setTime(datePlantation);
+                	calendar.add(Calendar.DATE, tempsCulture);
+                    Date dateDeRecoltePrevu = new Date(calendar.getTimeInMillis());
+                	
+                	if (nbExemplaires > 0 && idLot != -1 && idPlante != -1 && la.getMembrePourLot(idLot).contains(noMembre))
+                		pa.planterPlante(idLot, idPlante, datePlantation, nbExemplaires, dateDeRecoltePrevu);
                 }
                 else if (command.equals("recolterPlante"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                    String nomPlante = readString(tokenizer);
+                    String nomLot = readString(tokenizer);
+                    int noMembre = readInt(tokenizer);
+                    
+                    if (pa == null)
+                		pa = new PlanteAccess(cx);
+                    
+                    if (la == null)
+                    	la = new LotAccess(cx);
+                    
+                    int idPlante = pa.getPlanteId(nomPlante);
+                    int idLot = la.getLotid(nomLot);
+                    
+                    Date dateDeRevoltePrevu = pa.getDateDeRecoltePrevu(idLot, idPlante);
+                    Date currentDate = new Date(new java.util.Date().getTime());
+                    
+                    boolean pretPourRecolte = dateDeRevoltePrevu.before(currentDate) || dateDeRevoltePrevu.equals(currentDate);
+                    
+                    if (pretPourRecolte && idPlante != -1 && idLot != -1 && la.getMembrePourLot(la.getLotid(nomLot)).contains(noMembre))
+                    	pa.recolterPlante(idPlante, idLot);
                 }
                 else if (command.equals("afficherMembres"))
                 {
@@ -166,8 +222,8 @@ public class ConnectionManager {
                 }
                 else if (command.equals("afficherPlantes"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                    PlantManager pm = new PlantManager(cx);
+                    jc.afficherPlantes(pa.getPlantesList());
                 }
                 else if (command.equals("afficherLots"))
                 {
@@ -176,8 +232,9 @@ public class ConnectionManager {
                 }
                 else if (command.equals("afficherPlantesLot"))
                 {
-                    // Lire les parametres ici et appeler la bonne methode
-                    // de traitement pour la transaction
+                	String nomLot = readString(tokenizer);
+                	PlantManager pm = new PlantManager(cx);
+                	jc.afficherPlantesLots(nomLot, pm.getPlantesParLot(nomLot));
                 }
                 else
                 {

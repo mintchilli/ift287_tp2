@@ -142,9 +142,24 @@ public class JardinCollectif
 				System.out.println("\t" + membre);
 			}
 		}
-		
 	}
 
-
+	public void afficherPlantes(ArrayList<String> plantesString) {
+		System.out.println();
+		for (String str : plantesString) {
+			System.out.println(str);
+		}
+	}
+	
+	public void afficherPlantesLots(String nomLot, ArrayList<String> plantesDansLot) {
+		
+		System.out.println();
+		System.out.println("Lot: " + nomLot);
+		System.out.println("----------Liste des plantes dans le lot----------");
+		
+		for(String plante : plantesDansLot) {
+			System.out.println("\t" + plante);
+		}
+	}
 
 }
