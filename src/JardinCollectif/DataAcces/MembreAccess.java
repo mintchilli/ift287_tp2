@@ -137,7 +137,7 @@ public class MembreAccess {
 		}
 	}
 
-	public String getMembre(Integer noMembre) {
+	public String getMembre(int noMembre) {
 		try {
 			PreparedStatement s = conn.getConnection().prepareStatement("SELECT nom, prenom, estadmin FROM membre WHERE nomembre = ?");
 

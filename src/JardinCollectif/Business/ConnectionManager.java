@@ -222,6 +222,9 @@ public class ConnectionManager {
                 }
                 else if (command.equals("afficherPlantes"))
                 {
+                	if (pa == null)
+                		pa = new PlanteAccess(cx);
+                	
                     PlantManager pm = new PlantManager(cx);
                     jc.afficherPlantes(pa.getPlantesList());
                 }

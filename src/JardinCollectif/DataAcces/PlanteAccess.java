@@ -36,10 +36,18 @@ public class PlanteAccess {
 	public boolean retirerPlante(String nomPlante) {
 		try {
 			PreparedStatement s = conn.getConnection()
-					.prepareStatement("delete from Plante where nomPlante = ?");
-			s.setString(1, nomPlante);
-
+					.prepareStatement("select count(*) from plantelot where idplante = ?");
+			s.setInt(1, getPlanteId(nomPlante));
 			s.execute();
+			
+			ResultSet rs = s.getResultSet();
+			if (rs.next() && rs.getInt("count") > 0)
+				return false;
+			
+			PreparedStatement s2 = conn.getConnection()
+					.prepareStatement("delete from Plante where nomPlante = ?");
+			s2.setString(1, nomPlante);
+			s2.execute();
 
 			return true;
 
@@ -82,23 +90,11 @@ public class PlanteAccess {
 			if (!rs.next())
 				return false;
 			
-			int nbr = rs.getInt("nbExemplaires");
-			
-			if (nbr <= 1) {
-				PreparedStatement s2 = conn.getConnection()
-						.prepareStatement("delete from plantelot where idLot = ? and idPlante = ?");
-				s2.setInt(1, idLot);
-				s2.setInt(2, idPlante);
-				s2.execute();
-			}
-			else {
-				PreparedStatement s3 = conn.getConnection()
-						.prepareStatement("UPDATE plantelot SET nbExemplaires = ? where idLot = ? and idPlante = ?");
-				s3.setInt(1, nbr - 1);
-				s3.setInt(2, idLot);
-				s3.setInt(3, idPlante);
-				s3.execute();
-			}
+			PreparedStatement s2 = conn.getConnection()
+					.prepareStatement("delete from plantelot where idLot = ? and idPlante = ?");
+			s2.setInt(1, idLot);
+			s2.setInt(2, idPlante);
+			s2.execute();
 			
 			return true;
 
